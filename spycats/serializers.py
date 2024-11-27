@@ -81,6 +81,11 @@ class MissionUpdateSerializer(serializers.ModelSerializer):
                     "Cannot update fields of a completed target"
                 )
 
+            if target.is_complete and target_data.get("is_complete"):
+                raise serializers.ValidationError(
+                    "You cannot overwrite complete status"
+                )
+
         return data
 
     def update(self, instance: Mission, validated_data):

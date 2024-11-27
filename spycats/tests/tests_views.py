@@ -88,10 +88,6 @@ class MissionViewSetTests(TestCase):
         self.assertIn("Cannot update fields of a completed target", response.data["non_field_errors"])
 
     def test_complete_all_targets_and_mission(self):
-        for target in self.targets:
-            target.is_complete = True
-            target.save()
-
         response = self.client.patch(
             reverse("spycats:mission-detail", kwargs={"pk": self.mission.id}),
             data={
