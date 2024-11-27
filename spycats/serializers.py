@@ -141,13 +141,12 @@ class CatCreateSerializer(serializers.ModelSerializer):
         model = SpyCat
         fields = ["id", "name", "years_of_experience", "breed", "salary"]
 
-    def validate_salary(self, value):
-        if value <= 0:
+    def validate(self, attrs):
+        if attrs["salary"] <= 0:
             raise serializers.ValidationError("Salary must be a positive number")
+        validate_breed_name(attrs["breed"], serializers.ValidationError)
 
-    def validate_breed(self, value):
-        print(f"Validating breed: {value}")
-        validate_breed_name(value, serializers.ValidationError)
+        return attrs
 
 
 class CatListSerializer(serializers.ModelSerializer):

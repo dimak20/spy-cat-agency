@@ -15,7 +15,9 @@ from spycats.serializers import (
     MissionSerializer,
     MissionListSerializer,
     MissionAssignCatSerializer,
-    MissionUpdateSerializer, MissionDetailSerializer
+    MissionUpdateSerializer,
+    MissionDetailSerializer,
+    CatCreateSerializer
 )
 
 
@@ -30,7 +32,8 @@ class SpyCatViewSet(viewsets.ModelViewSet):
             return CatListSerializer
         if self.action == "retrieve":
             return CatRetrieveSerializer
-
+        if self.action == "create":
+            return CatCreateSerializer
         return CatSerializer
 
     def get_queryset(self):
