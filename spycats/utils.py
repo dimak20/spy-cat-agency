@@ -9,6 +9,7 @@ def get_breeds_from_api(
         cache_key: str | None = "static_key",
         cache_timeout: int | None = 600
 ) -> set:
+    """Fetch all breeds from an external API"""
     cached_data = cache.get(cache_key)
 
     if cached_data:
