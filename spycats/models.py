@@ -9,14 +9,8 @@ from spycats.validators import validate_breed_name
 class SpyCat(models.Model):
     name = models.CharField(_("name"), max_length=100)
     breed = models.CharField(_("breed"), max_length=100)
-    years_of_experience = models.PositiveIntegerField(
-        _("years of experience")
-    )
-    salary = models.DecimalField(
-        _("salary"),
-        max_digits=7,
-        decimal_places=2
-    )
+    years_of_experience = models.PositiveIntegerField(_("years of experience"))
+    salary = models.DecimalField(_("salary"), max_digits=7, decimal_places=2)
 
     def __str__(self) -> str:
         return f"Cat: {self.name}. Breed: {self.breed}"
@@ -31,24 +25,16 @@ class SpyCat(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=Q(salary__gt=0),
-                name="salary_greater_than_zero"
+                check=Q(salary__gt=0), name="salary_greater_than_zero"
             ),
         ]
 
 
 class Mission(models.Model):
     cat = models.ForeignKey(
-        SpyCat,
-        on_delete=SET_NULL,
-        blank=True,
-        null=True,
-        related_name="missions"
+        SpyCat, on_delete=SET_NULL, blank=True, null=True, related_name="missions"
     )
-    is_complete = models.BooleanField(
-        _("is complete"),
-        default=False
-    )
+    is_complete = models.BooleanField(_("is complete"), default=False)
 
     def __str__(self) -> str:
         if self.cat:
@@ -57,27 +43,11 @@ class Mission(models.Model):
 
 
 class Target(models.Model):
-    mission = models.ForeignKey(
-        Mission,
-        on_delete=CASCADE,
-        related_name="targets"
-    )
-    name = models.CharField(
-        _("name"),
-        max_length=100
-    )
-    country = models.CharField(
-        _("country"),
-        max_length=100
-    )
-    notes = models.TextField(
-        blank=True,
-        null=True
-    )
-    is_complete = models.BooleanField(
-        _("is complete"),
-        default=False
-    )
+    mission = models.ForeignKey(Mission, on_delete=CASCADE, related_name="targets")
+    name = models.CharField(_("name"), max_length=100)
+    country = models.CharField(_("country"), max_length=100)
+    notes = models.TextField(blank=True, null=True)
+    is_complete = models.BooleanField(_("is complete"), default=False)
 
     def __str__(self) -> str:
         return f"Target: {self.name}. Is_complete: {self.is_complete}"
