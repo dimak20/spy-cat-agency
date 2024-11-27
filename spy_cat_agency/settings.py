@@ -177,7 +177,7 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Spa Cat Agency API",
+    "TITLE": "Spy Cat Agency API",
     "DESCRIPTION": "Create Spy Cats and assign them missions",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
