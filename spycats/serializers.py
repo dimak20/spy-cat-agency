@@ -89,7 +89,6 @@ class MissionUpdateSerializer(serializers.ModelSerializer):
 
         with transaction.atomic():
             for target_data in targets:
-                print(target_data)
                 target_id = target_data.get("id")
                 if not target_id:
                     raise serializers.ValidationError("Target ID is required")
