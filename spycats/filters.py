@@ -1,12 +1,12 @@
 import django_filters
 
-from spycats.models import SpyCat, Mission
+from spycats.models import SpyCat
 
 
 class SpyCatFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(
         field_name="name",
-       lookup_expr="icontains"
+        lookup_expr="icontains"
     )
     breed = django_filters.CharFilter(
         field_name="breed",
@@ -30,6 +30,7 @@ class SpyCatFilter(django_filters.FilterSet):
             "years_of_experience"
 
         ]
+
 
 class MissionFilter(django_filters.FilterSet):
     is_complete = django_filters.BooleanFilter(

@@ -6,6 +6,8 @@ from spycats.validators import validate_breed_name
 
 
 class TargetSerializer(serializers.ModelSerializer):
+    is_complete = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = Target
         fields = ["id", "name", "country", "notes", "is_complete"]
@@ -20,11 +22,10 @@ class TargetUpdateSerializer(serializers.Serializer):
 class MissionSerializer(serializers.ModelSerializer):
     targets = TargetSerializer(many=True, read_only=False, allow_empty=False)
     is_complete = serializers.BooleanField(read_only=True)
-    cat = serializers.CharField(read_only=True)
 
     class Meta:
         model = Mission
-        fields = ["id", "cat", "is_complete", "targets"]
+        fields = ["id", "is_complete", "targets"]
 
     def create(self, validated_data):
         with transaction.atomic():
@@ -81,6 +82,11 @@ class MissionUpdateSerializer(serializers.ModelSerializer):
                     "Cannot update fields of a completed target"
                 )
 
+            if target.is_complete and target_data.get("is_complete"):
+                raise serializers.ValidationError(
+                    "You cannot overwrite complete status"
+                )
+
         return data
 
     def update(self, instance: Mission, validated_data):
@@ -135,13 +141,12 @@ class CatCreateSerializer(serializers.ModelSerializer):
         model = SpyCat
         fields = ["id", "name", "years_of_experience", "breed", "salary"]
 
-    def validate_salary(self, value):
-        if value <= 0:
+    def validate(self, attrs):
+        if attrs["salary"] <= 0:
             raise serializers.ValidationError("Salary must be a positive number")
+        validate_breed_name(attrs["breed"], serializers.ValidationError)
 
-    def validate_breed(self, value):
-        print(f"Validating breed: {value}")
-        validate_breed_name(value, serializers.ValidationError)
+        return attrs
 
 
 class CatListSerializer(serializers.ModelSerializer):
@@ -161,3 +166,12 @@ class CatListSerializer(serializers.ModelSerializer):
 
 class CatRetrieveSerializer(CatListSerializer):
     missions = MissionSerializer(many=True, read_only=True)
+
+
+class MissionDetailSerializer(serializers.ModelSerializer):
+    targets = TargetSerializer(many=True, read_only=False, allow_empty=False)
+    cat = CatSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Mission
+        fields = ["id", "cat", "is_complete", "targets"]
