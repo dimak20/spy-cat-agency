@@ -61,6 +61,14 @@ class MissionViewSet(viewsets.ModelViewSet):
             return MissionUpdateSerializer
         return MissionSerializer
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.action in ["list", "retrieve"]:
+            return queryset.select_related().prefetch_related("targets")
+
+        return queryset
+
     def destroy(self, request, *args, **kwargs):
 
         mission = self.get_object()
@@ -102,7 +110,6 @@ class MissionViewSet(viewsets.ModelViewSet):
             )
 
         try:
-
             cat = SpyCat.objects.get(id=cat_id)
         except ObjectDoesNotExist:
             return Response(
