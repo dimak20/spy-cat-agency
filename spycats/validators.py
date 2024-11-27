@@ -14,6 +14,7 @@ def validate_breed_name(name: str, error_to_raise: Callable) -> None | Exception
         breeds = get_breeds_from_api()
     except requests.exceptions.RequestException as e:
         logger.error(f"Cannot fetch breed data from external API: {e}")
+        raise error_to_raise(f"Unable to validate breed {name}. Please try again later.")
 
     breed_names = {breed["name"].lower() for breed in breeds}
 
