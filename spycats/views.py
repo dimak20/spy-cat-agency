@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -61,17 +62,48 @@ class MissionViewSet(
         self.perform_destroy(mission)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(
-        methods=["PATCH", "PUT"],
-        detail=True,
-        url_path="assign-cat",
-    )
-    def assign_cat(self, request, pk: int | None = None) -> Response:
+    @action(methods=["PATCH", "PUT"], detail=True, url_path="assign-cat")
+    def assign_cat(self, request, pk: int | None =None) -> Response:
+
         mission = self.get_object()
-        serializer = MissionAssignCatSerializer(mission, data=request.data, partial=True)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"detail": "Cat assigned successfully."}, status=status.HTTP_200_OK)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if mission.is_complete:
+            return Response(
+                {"detail": "Cannot assign a cat to a completed mission."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+        cat_id = request.data.get("cat")
+
+        if not cat_id:
+            return Response(
+                {"detail": "Cat ID is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+
+            cat = SpyCat.objects.get(id=cat_id)
+        except ObjectDoesNotExist:
+            return Response(
+                {"detail": "Cat with the given ID does not exist."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+        if cat.missions.filter(is_complete=False).exists():
+            return Response(
+                {"detail": "The cat is already assigned to another mission."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+        mission.cat = cat
+        mission.save()
+
+        return Response(
+            {"detail": "Cat assigned successfully."},
+            status=status.HTTP_200_OK
+        )
