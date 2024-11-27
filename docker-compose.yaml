@@ -1,20 +1,22 @@
 services:
-  air_service:
+  spycats:
     build:
       context: .
     env_file:
       - .env
     ports:
-      - "8000:8000"
+      - "${DJANGO_PORT}:${DJANGO_PORT}"
     command: >
       sh -c "python manage.py wait_for_db &&
             python manage.py migrate &&
-            python manage.py runserver 0.0.0.0:8000"
+            python manage.py runserver ${DJANGO_HOST}:${DJANGO_PORT}"
     volumes:
       - ./:/app
       - my_media:/files/media
     depends_on:
       - db
+    networks:
+      - spy
 
 
   db:
@@ -26,6 +28,8 @@ services:
       - "5432:5432"
     volumes:
       - my_db:$PGDATA
+    networks:
+      - spy
 
   redis:
     image: redis:7.0
@@ -33,7 +37,7 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - monitoring
+      - spy
     env_file:
       - .env
     healthcheck:
@@ -43,6 +47,9 @@ services:
       retries: 5
     restart: always
 
+networks:
+  spy:
+    driver: bridge
 
 volumes:
   my_db:
