@@ -1,7 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
 
-
 from spycats.models import SpyCat, Mission, Target
 from spycats.validators import validate_breed_name
 
@@ -16,12 +15,15 @@ class TargetSerializer(serializers.ModelSerializer):
             "notes",
             "is_complete"
         ]
-class MissionsSerializer(serializers.ModelSerializer):
+
+
+class MissionSerializer(serializers.ModelSerializer):
     targets = TargetSerializer(
         many=True,
         read_only=False,
         allow_empty=False
     )
+
     class Meta:
         model = Mission
         fields = [
@@ -47,8 +49,6 @@ class MissionsSerializer(serializers.ModelSerializer):
         return mission
 
 
-
-
 class CatSerializer(serializers.ModelSerializer):
     class Meta:
         model = SpyCat
@@ -67,6 +67,7 @@ class CatCreateSerializer(CatSerializer):
     you don’t have to validate the breed every time
     and don’t access a third-party API
     """
+
     def validate_salary(self, value):
         if value <= 0:
             raise serializers.ValidationError(
@@ -77,3 +78,16 @@ class CatCreateSerializer(CatSerializer):
         validate_breed_name(value, serializers.ValidationError)
 
 
+class CatRetrieveSerializer(serializers.ModelSerializer):
+    missions = MissionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = SpyCat
+        fields = [
+            "id",
+            "name",
+            "years_of_experience",
+            "breed",
+            "salary",
+            "missions"
+        ]
