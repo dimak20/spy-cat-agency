@@ -23,6 +23,8 @@ class MissionSerializer(serializers.ModelSerializer):
         read_only=False,
         allow_empty=False
     )
+    is_complete = serializers.BooleanField(read_only=True)
+    cat = serializers.CharField(read_only=True)
 
     class Meta:
         model = Mission
@@ -49,6 +51,22 @@ class MissionSerializer(serializers.ModelSerializer):
         return mission
 
 
+class MissionListSerializer(MissionSerializer):
+    targets = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field="id",
+        many=True
+    )
+
+
+class MissionAssignCatSerializer(serializers.ModelSerializer):
+    cat = serializers.PrimaryKeyRelatedField(queryset=SpyCat.objects.all())
+
+    class Meta:
+        model = Mission
+        fields = ["cat"]
+
+
 class CatSerializer(serializers.ModelSerializer):
     class Meta:
         model = SpyCat
@@ -61,12 +79,22 @@ class CatSerializer(serializers.ModelSerializer):
         ]
 
 
-class CatCreateSerializer(CatSerializer):
+class CatCreateSerializer(serializers.ModelSerializer):
     """
     A separate serializer is needed because
     you don’t have to validate the breed every time
     and don’t access a third-party API
     """
+
+    class Meta:
+        model = SpyCat
+        fields = [
+            "id",
+            "name",
+            "years_of_experience",
+            "breed",
+            "salary"
+        ]
 
     def validate_salary(self, value):
         if value <= 0:
@@ -75,6 +103,7 @@ class CatCreateSerializer(CatSerializer):
             )
 
     def validate_breed(self, value):
+        print(f"Validating breed: {value}")
         validate_breed_name(value, serializers.ValidationError)
 
 
