@@ -96,10 +96,14 @@ class MissionUpdateSerializer(serializers.ModelSerializer):
                 try:
                     target_to_update = Target.objects.get(id=target_id)
                 except Target.DoesNotExist:
-                    raise serializers.ValidationError(f"Target with ID {target_id} does not exist")
+                    raise serializers.ValidationError(
+                        f"Target with ID {target_id} does not exist"
+                    )
 
                 if target_to_update.mission != mission:
-                    raise serializers.ValidationError(f"Target with ID {target_id} is assigned to another mission")
+                    raise serializers.ValidationError(
+                        f"Target with ID {target_id} is assigned to another mission"
+                    )
 
                 for key, value in target_data.items():
                     if hasattr(target_to_update, key) and value is not None:
@@ -145,7 +149,14 @@ class CatListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SpyCat
-        fields = ["id", "name", "years_of_experience", "breed", "salary", "missions"]
+        fields = [
+            "id",
+            "name",
+            "years_of_experience",
+            "breed",
+            "salary",
+            "missions"
+        ]
 
 
 class CatRetrieveSerializer(CatListSerializer):
