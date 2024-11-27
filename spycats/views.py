@@ -1,11 +1,13 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from spycats.filters import SpyCatFilter, MissionFilter
 from spycats.models import SpyCat, Mission
+from spycats.schemas import cat_filter_parameters, mission_filter_parameters
 from spycats.serializers import (
     CatListSerializer,
     CatRetrieveSerializer,
@@ -39,6 +41,10 @@ class SpyCatViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    @extend_schema(parameters=cat_filter_parameters)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class MissionViewSet(viewsets.ModelViewSet):
     model = Mission
@@ -67,6 +73,10 @@ class MissionViewSet(viewsets.ModelViewSet):
 
         self.perform_destroy(mission)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @extend_schema(parameters=mission_filter_parameters)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     @action(
         methods=["PATCH", "PUT"],
