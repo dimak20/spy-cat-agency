@@ -93,6 +93,15 @@ You can find out container name by the command "docker ps" -> your cat service i
 
 5. Access the API at http://localhost:8000/api/v1/
 
+## API Endpoints
+You can download the endpoints schema by the link below or download it directly from the repository:
+
+- [Postman Collection on Dropbox](https://www.dropbox.com/scl/fi/cbyf3zq4dz876vjvbamia/Spy-Cat-Agency-API.yaml?rlkey=kcqcnlizuv4fuw7b307wtx38s&st=phdbk1v0&dl=0)
+
+
+
+
+
 ### Project configuration
 
 Your project needs to have this structure
