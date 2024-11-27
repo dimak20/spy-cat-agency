@@ -1,14 +1,11 @@
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import viewsets, status, mixins
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
-from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
 
 from spycats.models import SpyCat, Mission
 from spycats.serializers import CatListSerializer, CatRetrieveSerializer, CatSerializer, MissionSerializer, \
-    MissionListSerializer, MissionAssignCatSerializer
+    MissionListSerializer, MissionAssignCatSerializer, MissionUpdateSerializer
 
 
 class SpyCatViewSet(viewsets.ModelViewSet):
@@ -32,13 +29,7 @@ class SpyCatViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class MissionViewSet(
-    GenericViewSet,
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-):
+class MissionViewSet(viewsets.ModelViewSet):
     model = Mission
     queryset = Mission.objects.all()
 
@@ -47,6 +38,8 @@ class MissionViewSet(
             return MissionListSerializer
         if self.action == "assign-cat":
             return MissionAssignCatSerializer
+        if self.action in ["update", "partial_update"]:
+            return MissionUpdateSerializer
         return MissionSerializer
 
     def destroy(self, request, *args, **kwargs):
@@ -62,18 +55,20 @@ class MissionViewSet(
         self.perform_destroy(mission)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(methods=["PATCH", "PUT"], detail=True, url_path="assign-cat")
-    def assign_cat(self, request, pk: int | None =None) -> Response:
+    @action(
+        methods=["PATCH", "PUT"],
+        detail=True,
+        url_path="assign-cat"
+    )
+    def assign_cat(self, request, pk: int | None = None) -> Response:
 
         mission = self.get_object()
-
 
         if mission.is_complete:
             return Response(
                 {"detail": "Cannot assign a cat to a completed mission."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
 
         cat_id = request.data.get("cat")
 
@@ -92,13 +87,11 @@ class MissionViewSet(
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
         if cat.missions.filter(is_complete=False).exists():
             return Response(
                 {"detail": "The cat is already assigned to another mission."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
 
         mission.cat = cat
         mission.save()
