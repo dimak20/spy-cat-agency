@@ -1,8 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from spycats.filters import SpyCatFilter
 from spycats.models import SpyCat, Mission
 from spycats.serializers import CatListSerializer, CatRetrieveSerializer, CatSerializer, MissionSerializer, \
     MissionListSerializer, MissionAssignCatSerializer, MissionUpdateSerializer
@@ -11,6 +13,8 @@ from spycats.serializers import CatListSerializer, CatRetrieveSerializer, CatSer
 class SpyCatViewSet(viewsets.ModelViewSet):
     model = SpyCat
     queryset = SpyCat.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = SpyCatFilter
 
     def get_serializer_class(self):
         if self.action == "list":
