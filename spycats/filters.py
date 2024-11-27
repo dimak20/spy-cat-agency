@@ -12,11 +12,11 @@ class SpyCatFilter(django_filters.FilterSet):
         field_name="breed",
         lookup_expr="icontains"
     )
-    salary_more_than = django_filters.CharFilter(
+    salary_more_than = django_filters.NumberFilter(
         field_name="salary",
         lookup_expr="gte"
     )
-    salary_less_than = django_filters.CharFilter(
+    salary_less_than = django_filters.NumberFilter(
         field_name="salary",
         lookup_expr="lte"
     )
