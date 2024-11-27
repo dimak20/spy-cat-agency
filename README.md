@@ -92,3 +92,61 @@ python manage.py loaddata data.json
 You can find out container name by the command "docker ps" -> your cat service id
 
 5. Access the API at http://localhost:8000/api/v1/
+
+### Project configuration
+
+Your project needs to have this structure
+
+
+```plaintext
+Project
+├── spycats
+|   └── management
+|   |  └── commands
+|   |     └── wait_for_db.py
+|   |── tests
+│   ├── __init__.py
+│   └── admin.py
+│   ├── apps.py
+|   ├── filters.py
+|   ├── models.py
+│   ├── validators.py
+|   ├── serializers.py
+|   ├── utils.py
+│   ├── urls.py
+│   └── views.py
+|
+|
+├── spy_cat_agency
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── asgi.py
+│   ├──celery.py
+│   ├── settings.py
+│   └── urls.py
+│   
+├── media
+│   
+├── logos
+│   
+├── templates
+|
+│
+├── .dockerignore
+│
+├── .env
+│
+├── .gitignore
+│
+│
+├── docker-compose.yaml
+│
+├── Docker
+│
+├── manage.py
+│
+│
+├── README.md
+|
+└── requirements.txt
+```
