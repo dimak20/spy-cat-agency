@@ -6,8 +6,15 @@ from rest_framework.response import Response
 
 from spycats.filters import SpyCatFilter, MissionFilter
 from spycats.models import SpyCat, Mission
-from spycats.serializers import CatListSerializer, CatRetrieveSerializer, CatSerializer, MissionSerializer, \
-    MissionListSerializer, MissionAssignCatSerializer, MissionUpdateSerializer
+from spycats.serializers import (
+    CatListSerializer,
+    CatRetrieveSerializer,
+    CatSerializer,
+    MissionSerializer,
+    MissionListSerializer,
+    MissionAssignCatSerializer,
+    MissionUpdateSerializer
+)
 
 
 class SpyCatViewSet(viewsets.ModelViewSet):
