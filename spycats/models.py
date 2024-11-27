@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import SET_NULL, Q
+from django.db.models import SET_NULL, Q, CASCADE
 from django.utils.translation import gettext as _
 
 from spycats.validators import validate_breed_name
@@ -36,19 +36,48 @@ class SpyCat(models.Model):
             ),
         ]
 
+
 class Mission(models.Model):
     cat = models.ForeignKey(
         SpyCat,
         on_delete=SET_NULL,
         blank=True,
-        null=True
+        null=True,
+        related_name="missions"
     )
-    is_completed = models.BooleanField(
-        _("is completed"),
+    is_complete = models.BooleanField(
+        _("is complete"),
         default=False
     )
 
     def __str__(self) -> str:
         if self.cat:
-            return f"Mission assigned to {self.cat.name}. Status: {self.is_completed}"
+            return f"Mission assigned to {self.cat.name}. Status: {self.is_complete}"
         return f"Open mission with id {self.id}"
+
+
+class Target(models.Model):
+    mission = models.ForeignKey(
+        Mission,
+        on_delete=CASCADE,
+        related_name="targets"
+    )
+    name = models.CharField(
+        _("name"),
+        max_length=100
+    )
+    country = models.CharField(
+        _("country"),
+        max_length=100
+    )
+    notes = models.TextField(
+        blank=True,
+        null=True
+    )
+    is_complete = models.BooleanField(
+        _("is complete"),
+        default=False
+    )
+
+    def __str__(self) -> str:
+        return f"Target: {self.name}. Is_complete: {self.is_complete}"
