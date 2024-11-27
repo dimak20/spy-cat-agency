@@ -1,0 +1,704 @@
+openapi: 3.0.3
+info:
+  title: Spy Cat Agency API
+  version: 1.0.0
+  description: Create Spy Cats and assign them missions
+paths:
+  /api/v1/spycats/cats/:
+    get:
+      operationId: api_v1_spycats_cats_list
+      parameters:
+      - in: query
+        name: breed
+        schema:
+          type: string
+        description: Search cat by breed. Case insensitive
+      - in: query
+        name: name
+        schema:
+          type: string
+        description: Search cat by name. Case insensitive
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: salary
+        schema:
+          type: number
+      - in: query
+        name: salary_less_than
+        schema:
+          type: integer
+        description: "\n            Search cat by salary. \n            Result list\
+          \ will show cats \n            with salary less than number\n          \
+          \  "
+      - in: query
+        name: salary_more_than
+        schema:
+          type: integer
+        description: "\n            Search cat by salary. \n            Result list\
+          \ will show cats \n            with salary greater than number\n       \
+          \     "
+      - in: query
+        name: years_of_experience
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCatListList'
+          description: ''
+    post:
+      operationId: api_v1_spycats_cats_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cat'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
+          description: ''
+  /api/v1/spycats/cats/{id}/:
+    get:
+      operationId: api_v1_spycats_cats_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this spy cat.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatRetrieve'
+          description: ''
+    put:
+      operationId: api_v1_spycats_cats_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this spy cat.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cat'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
+          description: ''
+    patch:
+      operationId: api_v1_spycats_cats_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this spy cat.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCat'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
+          description: ''
+    delete:
+      operationId: api_v1_spycats_cats_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this spy cat.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/spycats/missions/:
+    get:
+      operationId: api_v1_spycats_missions_list
+      parameters:
+      - in: query
+        name: is_complete
+        schema:
+          type: string
+        description: Search mission by complete status.
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMissionListList'
+          description: ''
+    post:
+      operationId: api_v1_spycats_missions_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Mission'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+          description: ''
+  /api/v1/spycats/missions/{id}/:
+    get:
+      operationId: api_v1_spycats_missions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mission.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+          description: ''
+    put:
+      operationId: api_v1_spycats_missions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mission.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MissionUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MissionUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MissionUpdate'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissionUpdate'
+          description: ''
+    patch:
+      operationId: api_v1_spycats_missions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mission.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMissionUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMissionUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMissionUpdate'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissionUpdate'
+          description: ''
+    delete:
+      operationId: api_v1_spycats_missions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mission.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/spycats/missions/{id}/assign-cat/:
+    put:
+      operationId: api_v1_spycats_missions_assign_cat_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mission.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Mission'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+          description: ''
+    patch:
+      operationId: api_v1_spycats_missions_assign_cat_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mission.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMission'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+          description: ''
+components:
+  schemas:
+    Cat:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        years_of_experience:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        breed:
+          type: string
+          maxLength: 100
+        salary:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+      required:
+      - breed
+      - id
+      - name
+      - salary
+      - years_of_experience
+    CatList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        years_of_experience:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        breed:
+          type: string
+          maxLength: 100
+        salary:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+        missions:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+      required:
+      - breed
+      - id
+      - missions
+      - name
+      - salary
+      - years_of_experience
+    CatRetrieve:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        years_of_experience:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        breed:
+          type: string
+          maxLength: 100
+        salary:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+        missions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mission'
+          readOnly: true
+      required:
+      - breed
+      - id
+      - missions
+      - name
+      - salary
+      - years_of_experience
+    Mission:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        cat:
+          type: string
+          readOnly: true
+        is_complete:
+          type: boolean
+          readOnly: true
+        targets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Target'
+      required:
+      - cat
+      - id
+      - is_complete
+      - targets
+    MissionList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        cat:
+          type: string
+          readOnly: true
+        is_complete:
+          type: boolean
+          readOnly: true
+        targets:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+      required:
+      - cat
+      - id
+      - is_complete
+      - targets
+    MissionUpdate:
+      type: object
+      properties:
+        targets:
+          type: array
+          items:
+            $ref: '#/components/schemas/TargetUpdate'
+      required:
+      - targets
+    PaginatedCatListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatList'
+    PaginatedMissionListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MissionList'
+    PatchedCat:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        years_of_experience:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        breed:
+          type: string
+          maxLength: 100
+        salary:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+    PatchedMission:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        cat:
+          type: string
+          readOnly: true
+        is_complete:
+          type: boolean
+          readOnly: true
+        targets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Target'
+    PatchedMissionUpdate:
+      type: object
+      properties:
+        targets:
+          type: array
+          items:
+            $ref: '#/components/schemas/TargetUpdate'
+    Target:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        country:
+          type: string
+          maxLength: 100
+        notes:
+          type: string
+          nullable: true
+        is_complete:
+          type: boolean
+      required:
+      - country
+      - id
+      - name
+    TargetUpdate:
+      type: object
+      properties:
+        id:
+          type: string
+        is_complete:
+          type: boolean
+        notes:
+          type: string
+      required:
+      - id
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
