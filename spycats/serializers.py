@@ -78,8 +78,11 @@ class CatCreateSerializer(CatSerializer):
         validate_breed_name(value, serializers.ValidationError)
 
 
-class CatRetrieveSerializer(serializers.ModelSerializer):
-    missions = MissionSerializer(many=True, read_only=True)
+class CatListSerializer(serializers.ModelSerializer):
+    missions = serializers.PrimaryKeyRelatedField(
+        many=True,
+        read_only=True
+    )
 
     class Meta:
         model = SpyCat
@@ -91,3 +94,7 @@ class CatRetrieveSerializer(serializers.ModelSerializer):
             "salary",
             "missions"
         ]
+
+
+class CatRetrieveSerializer(CatListSerializer):
+    missions = MissionSerializer(many=True, read_only=True)
