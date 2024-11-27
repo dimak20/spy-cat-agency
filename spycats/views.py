@@ -4,7 +4,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from spycats.filters import SpyCatFilter
+from spycats.filters import SpyCatFilter, MissionFilter
 from spycats.models import SpyCat, Mission
 from spycats.serializers import CatListSerializer, CatRetrieveSerializer, CatSerializer, MissionSerializer, \
     MissionListSerializer, MissionAssignCatSerializer, MissionUpdateSerializer
@@ -36,6 +36,8 @@ class SpyCatViewSet(viewsets.ModelViewSet):
 class MissionViewSet(viewsets.ModelViewSet):
     model = Mission
     queryset = Mission.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = MissionFilter
 
     def get_serializer_class(self):
         if self.action == "list":

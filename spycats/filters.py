@@ -31,3 +31,8 @@ class SpyCatFilter(django_filters.FilterSet):
 
         ]
 
+class MissionFilter(django_filters.FilterSet):
+    is_complete = django_filters.BooleanFilter(
+        field_name="is_complete",
+        lookup_expr="exact"
+    )
