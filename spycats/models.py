@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import SET_NULL, Q
 from django.utils.translation import gettext as _
 
 from spycats.validators import validate_breed_name
@@ -18,7 +19,7 @@ class SpyCat(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"Cat: {self.name}. Breed: {breed}"
+        return f"Cat: {self.name}. Breed: {self.breed}"
 
     def clean(self):
         validate_breed_name(self.breed, ValidationError)
@@ -27,4 +28,27 @@ class SpyCat(models.Model):
         self.full_clean()
         return super().save(*args, **kwargs)
 
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=Q(salary__gt=0),
+                name="salary_greater_than_zero"
+            ),
+        ]
 
+class Mission(models.Model):
+    cat = models.ForeignKey(
+        SpyCat,
+        on_delete=SET_NULL,
+        blank=True,
+        null=True
+    )
+    is_completed = models.BooleanField(
+        _("is completed"),
+        default=False
+    )
+
+    def __str__(self) -> str:
+        if self.cat:
+            return f"Mission assigned to {self.cat.name}. Status: {self.is_completed}"
+        return f"Open mission with id {self.id}"
