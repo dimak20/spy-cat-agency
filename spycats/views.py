@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -15,7 +15,7 @@ from spycats.serializers import (
     MissionSerializer,
     MissionListSerializer,
     MissionAssignCatSerializer,
-    MissionUpdateSerializer
+    MissionUpdateSerializer, MissionDetailSerializer
 )
 
 
@@ -55,6 +55,8 @@ class MissionViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return MissionListSerializer
+        if self.action == "retrieve":
+            return MissionDetailSerializer
         if self.action == "assign-cat":
             return MissionAssignCatSerializer
         if self.action in ["update", "partial_update"]:

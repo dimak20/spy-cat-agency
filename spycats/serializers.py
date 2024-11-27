@@ -6,6 +6,8 @@ from spycats.validators import validate_breed_name
 
 
 class TargetSerializer(serializers.ModelSerializer):
+    is_complete = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = Target
         fields = ["id", "name", "country", "notes", "is_complete"]
@@ -20,11 +22,10 @@ class TargetUpdateSerializer(serializers.Serializer):
 class MissionSerializer(serializers.ModelSerializer):
     targets = TargetSerializer(many=True, read_only=False, allow_empty=False)
     is_complete = serializers.BooleanField(read_only=True)
-    cat = serializers.CharField(read_only=True)
 
     class Meta:
         model = Mission
-        fields = ["id", "cat", "is_complete", "targets"]
+        fields = ["id", "is_complete", "targets"]
 
     def create(self, validated_data):
         with transaction.atomic():
@@ -166,3 +167,12 @@ class CatListSerializer(serializers.ModelSerializer):
 
 class CatRetrieveSerializer(CatListSerializer):
     missions = MissionSerializer(many=True, read_only=True)
+
+
+class MissionDetailSerializer(serializers.ModelSerializer):
+    targets = TargetSerializer(many=True, read_only=False, allow_empty=False)
+    cat = CatSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Mission
+        fields = ["id", "cat", "is_complete", "targets"]
